@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders (adjust names as needed)
+venv/
+sec_venv/
+.env/
+.env.*
+
+# Environment variables file (sensitive, so don't commit)
+.env
+
+# VS Code settings folder
+.vscode/
+
+# Editor/OS-specific files
+*.swp
+*~
+.DS_Store
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Test and coverage reports
+.tox/
+.nox/
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+
+# Other common files
+*.bak
