@@ -10,7 +10,7 @@ from schemas import (
     UserCreate,
     UserResponse,
     LoginRequest,
-    LoginResponse,  # Schema that includes user_id
+    LoginResponse,  # New schema that includes user_id
     ChangePasswordRequest,
     ResetPasswordRequest,
     ResetPasswordConfirm
@@ -29,7 +29,7 @@ def get_db():
     finally:
         db.close()
 
-# Stub for sending email (this function is now unused since verification is suppressed)
+# Stub for sending email (to be replaced with real SMTP/email provider integration)
 def send_email(to_email: str, subject: str, body: str):
     print(f"Sending email to {to_email} with subject '{subject}' and body:\n{body}")
 
@@ -44,21 +44,28 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     hashed_password = auth.get_password_hash(user.password)
     generated_user_id = str(uuid.uuid4())
     
-    # Immediately mark user as verified by setting is_verified=True
     new_user = User(
         user_id=generated_user_id,
         email=user.email,
         username=user.username,
         hashed_password=hashed_password,
         is_active=True,
-        is_verified=True,  # Suppress email verification
+        is_verified=False,
     )
+    
+    # Generate email verification token
+    verification_token = str(uuid.uuid4())
+    new_user.email_verification_token = verification_token
+    new_user.token_expiration = datetime.utcnow() + timedelta(hours=24)
     
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     
-    # Since verification is suppressed, we don't generate a verification token or send an email
+    # Send verification email (stubbed)
+    verification_link = f"http://yourdomain.com/auth/verify-email?token={verification_token}"
+    send_email(new_user.email, "Verify your email", f"Click the following link to verify your email: {verification_link}")
+    
     return new_user
 
 @router.post("/login", response_model=LoginResponse)
@@ -66,13 +73,14 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == login_data.email).first()
     if not user or not user.hashed_password or not auth.verify_password(login_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
-    # Email verification check removed so login proceeds immediately
+    if not user.is_verified:
+        raise HTTPException(status_code=400, detail="Email not verified")
+    
     access_token = auth.create_access_token(data={"user_id": user.user_id})
-    return {"access_token": access_token, "token_type": "bearer", "user_id": user.username}
+    return {"access_token": access_token, "token_type": "bearer", "user_id": user.user_id}
 
 @router.get("/verify-email")
 def verify_email(token: str, db: Session = Depends(get_db)):
-    # This endpoint is now redundant, but left in case it's needed in the future
     user = db.query(User).filter(User.email_verification_token == token).first()
     if not user:
         raise HTTPException(status_code=400, detail="Invalid verification token")

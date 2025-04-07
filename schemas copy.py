@@ -20,10 +20,6 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-# New schema that extends Token and adds the user_id field
-class LoginResponse(Token):
-    user_id: str
-
 class TokenData(BaseModel):
     user_id: str = None
 
