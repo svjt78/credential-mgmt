@@ -15,7 +15,8 @@ app = FastAPI(title="Credential Management Service")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Adjust/add if you have multiple origins
+    #allow_origins=["http://localhost:3000"],  # Adjust/add if you have multiple origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],  # or list specific methods, e.g. ["GET", "POST"]
     allow_headers=["*"],  # or list specific headers
