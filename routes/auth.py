@@ -1,4 +1,3 @@
-# routes/auth.py
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
@@ -8,9 +7,9 @@ import jwt
 from models import User
 from schemas import (
     UserCreate,
-    UserResponse,
     LoginRequest,
-    LoginResponse,  # Schema that includes user_id
+    LoginResponse,
+    SignupResponse,  # Newly added schema for signup
     ChangePasswordRequest,
     ResetPasswordRequest,
     ResetPasswordConfirm
@@ -33,7 +32,7 @@ def get_db():
 def send_email(to_email: str, subject: str, body: str):
     print(f"Sending email to {to_email} with subject '{subject}' and body:\n{body}")
 
-@router.post("/signup", response_model=UserResponse)
+@router.post("/signup", response_model=SignupResponse)
 def signup(user: UserCreate, db: Session = Depends(get_db)):
     # Check for existing email or username
     if db.query(User).filter(User.email == user.email).first():
@@ -58,8 +57,19 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     
-    # Since verification is suppressed, we don't generate a verification token or send an email
-    return new_user
+    # Generate JWT token immediately upon signup
+    access_token = auth.create_access_token(data={"user_id": new_user.user_id})
+    
+    return {
+        "id": new_user.id,
+        "email": new_user.email,
+        "username": new_user.username,
+        "is_active": new_user.is_active,
+        "is_verified": new_user.is_verified,
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": new_user.username,
+    }
 
 @router.post("/login", response_model=LoginResponse)
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):

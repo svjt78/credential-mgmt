@@ -1,4 +1,3 @@
-# schemas.py
 from pydantic import BaseModel, EmailStr
 
 class UserBase(BaseModel):
@@ -12,7 +11,7 @@ class UserResponse(UserBase):
     id: int
     is_active: bool
     is_verified: bool
-    
+
     class Config:
         orm_mode = True
 
@@ -20,9 +19,22 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-# New schema that extends Token and adds the user_id field
 class LoginResponse(Token):
     user_id: str
+
+# Dedicated response schema for signup, combining user fields and token fields
+class SignupResponse(BaseModel):
+    id: int
+    email: EmailStr
+    username: str
+    is_active: bool
+    is_verified: bool
+    access_token: str
+    token_type: str
+    user_id: str
+
+    class Config:
+        orm_mode = True
 
 class TokenData(BaseModel):
     user_id: str = None
