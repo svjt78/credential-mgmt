@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   api:
     build:
@@ -10,15 +12,33 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    networks:
+      app-network:
+        aliases:
+          - credential-app
 
   db:
     image: postgres:14
     restart: unless-stopped
+    ports:
+      - '5433:5432'
     env_file:
       - .env
     volumes:
-      - credentials_db_data:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
 
 volumes:
   credentials_db_data:
+
+networks:
+  app-network:
+    external: true

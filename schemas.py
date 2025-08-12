@@ -1,4 +1,7 @@
+from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr
+
+# ---------- Users ----------
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -15,29 +18,40 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
+# ---------- Auth / Tokens ----------
+
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    token_type: Literal["bearer"]
 
-class LoginResponse(Token):
-    user_id: str
-
-# Dedicated response schema for signup, combining user fields and token fields
-class SignupResponse(BaseModel):
-    id: int
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: Literal["bearer"]
+    user_id: str            # credential UUID
     email: EmailStr
     username: str
     is_active: bool
     is_verified: bool
-    access_token: str
-    token_type: str
-    user_id: str
+
+    class Config:
+        orm_mode = True
+
+class SignupResponse(BaseModel):
+    id: int
+    user_id: str            # credential UUID
+    email: EmailStr
+    username: str
+    is_active: bool
+    is_verified: bool
+    verificationToken: str  # <-- added
 
     class Config:
         orm_mode = True
 
 class TokenData(BaseModel):
-    user_id: str = None
+    user_id: Optional[str] = None
+
+# ---------- Requests ----------
 
 class LoginRequest(BaseModel):
     email: EmailStr

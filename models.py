@@ -7,9 +7,9 @@ class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, unique=True, index=True)  # Unique user identifier (e.g., "suvodutta" for superuser)
+    user_id = Column(String, index=True)  # Unique user identifier (e.g., "suvodutta" for superuser)
     email = Column(String, unique=True, index=True, nullable=False)
-    username = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, index=True, nullable=False)
     hashed_password = Column(String, nullable=True)  # Nullable for OAuth accounts
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
