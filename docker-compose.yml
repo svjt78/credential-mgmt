@@ -12,14 +12,14 @@ services:
     env_file:
       - .env
     depends_on:
-      db:
+      credential-db:
         condition: service_healthy
     networks:
       app-network:
         aliases:
           - credential-app
 
-  db:
+  credential-db:
     image: postgres:14
     restart: unless-stopped
     ports:
