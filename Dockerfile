@@ -1,40 +1,39 @@
-# Builder stage: compile wheels
-FROM python:3.10-slim AS builder
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Set work directory
 WORKDIR /app
 
-# install build deps
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      build-essential \
-      libpq-dev \
- && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements and install dependencies
 COPY requirements.txt .
-RUN pip wheel --no-cache-dir --wheel-dir /app/wheels -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Final stage: lean runtime image
-FROM python:3.10-slim
-WORKDIR /app
-
-# runtime libs
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      libpq-dev \
- && rm -rf /var/lib/apt/lists/*
-
-# install Python deps from wheels
-COPY --from=builder /app/wheels /wheels
-COPY requirements.txt .
-RUN pip install --no-cache-dir --no-index --find-links /wheels -r requirements.txt
-
-# copy entrypoint for one-time table creation
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-
-# copy app source
+# Copy application code
 COPY . .
 
-# serve on port 8001
-EXPOSE 8001
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8001", "--workers", "4"]
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose port (Railway will set PORT env var)
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:$PORT/health || exit 1
+
+# Start command - Railway will override PORT
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}

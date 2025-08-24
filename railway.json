@@ -1,0 +1,14 @@
+
+{
+  "name": "digitaldossier-credentials",
+  "description": "Credential management service for Digital Dossier blog",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile.prod"
+  },
+  "deploy": {
+    "numReplicas": 1,
+    "sleepApplication": false,
+    "restartPolicyType": "ON_FAILURE"
+  }
+}

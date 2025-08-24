@@ -1,9 +1,10 @@
-fastapi             # web framework :contentReference[oaicite:0]{index=0}
-uvicorn             # ASGI server (for dev & prod) 
-SQLAlchemy          # ORM :contentReference[oaicite:1]{index=1}
-python-dotenv       # load .env :contentReference[oaicite:2]{index=2}
-passlib[bcrypt]     # password hashing :contentReference[oaicite:3]{index=3}
-PyJWT               # JWT encode/decode :contentReference[oaicite:4]{index=4}
-psycopg2-binary     # PostgreSQL driver (inferred from DATABASE_URL “postgresql://…”) :contentReference[oaicite:5]{index=5}
-pydantic            # data validation :contentReference[oaicite:6]{index=6}
-email-validator     # EmailStr support :contentReference[oaicite:7]{index=7}
+fastapi
+uvicorn[standard]        # Include standard extras for better performance
+gunicorn                 # Add gunicorn for Railway deployment
+SQLAlchemy
+python-dotenv
+passlib[bcrypt]
+PyJWT
+psycopg2-binary
+pydantic
+email-validator

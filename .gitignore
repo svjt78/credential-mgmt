@@ -40,3 +40,14 @@ htmlcov/
 # Other common files
 *.bak
 * copy*
+
+# Railway deployment
+.railway/
+
+# PostgreSQL data
+pgdata/
+
+# Local environment files
+.env.local
+.env.production
+.env.staging
