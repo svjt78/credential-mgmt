@@ -1,53 +1,151 @@
-# Byte-compiled / optimized / DLL files
+# ===========================================
+# Comprehensive .gitignore for Credentials App
+# ===========================================
+
+# === PYTHON ===
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Virtual environment folders (adjust names as needed)
-venv/
-sec_venv/
-.env/
-.env.*
-
-# Environment variables file (sensitive, so don't commit)
-.env
-
-# VS Code settings folder
-.vscode/
-
-# Editor/OS-specific files
-*.swp
-*~
-.DS_Store
-
-# Distribution / packaging
+*.so
+.Python
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
 *.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Test and coverage reports
+# === VIRTUAL ENVIRONMENTS ===
+pyvenv.cfg
+.env
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+sec_venv/
+
+# === COPY AND BACKUP FILES ===
+*copy*
+*backup*
+* copy*
+* backup*
+*.bak
+*.backup
+*.orig
+*.tmp
+*.temp
+.env copy
+.env copy 2
+main copy.py
+database copy.py
+models copy.py
+schemas copy.py
+requirements copy.txt
+docker-compose copy.yml
+*.py.backup
+*.yml.backup
+*.json.backup
+
+# === DATABASE FILES ===
+pgdata/
+postgres_data/
+*.db
+*.sqlite
+*.sqlite3
+
+# === DOCKER FILES (Development) ===
+docker-compose.override.yml
+Dockerfile.dev.local
+
+# === IDE AND EDITOR FILES ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# === OS FILES ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# === TESTING ===
 .tox/
 .nox/
 .coverage
+.coverage.*
+.cache
+nosetests.xml
 coverage.xml
-htmlcov/
+*.cover
+*.py,cover
+.hypothesis/
 .pytest_cache/
-.mypy_cache/
+cover/
 
-# Logs
+# === JUPYTER NOTEBOOK ===
+.ipynb_checkpoints
+
+# === LOGS ===
 *.log
+logs/
 
-# Other common files
-*.bak
-* copy*
+# === SECURITY SENSITIVE FILES ===
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
-# Railway deployment
+# === TEMPORARY FILES ===
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# === MISC ===
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+
+# === FASTAPI SPECIFIC ===
+.pytest_cache/
+
+# === RAILWAY ===
 .railway/
 
-# PostgreSQL data
-pgdata/
-
-# Local environment files
-.env.local
-.env.production
-.env.staging
+# === GIT ===
+.git/
