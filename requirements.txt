@@ -3,7 +3,8 @@ uvicorn[standard]        # Include standard extras for better performance
 gunicorn                 # Add gunicorn for Railway deployment
 SQLAlchemy
 python-dotenv
-passlib[bcrypt]
+passlib[bcrypt]==1.7.4   # Pin specific version for bcrypt compatibility
+bcrypt==4.0.1            # Pin bcrypt version to avoid compatibility issues
 PyJWT
 psycopg2-binary
 pydantic
